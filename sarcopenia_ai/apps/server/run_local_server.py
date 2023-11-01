@@ -58,7 +58,7 @@ args = parse_inputs()
 
 app = create_app(args)
 
-
+# [POST] predicting API entrance
 @app.route("/predict", methods=["POST"])
 def predict():
     if request.method == "POST":
@@ -92,6 +92,7 @@ def process_file(image_path, filename, prob_threshold=0.1):
         set_session(sess)
         preds = slice_detection_model.predict(image2d)
 
+    # Slice prediction task
     pred_z, prob = decode_slice_detection_prediction(preds)
     slice_z = adjust_detected_position_spacing(pred_z, spacing)
 
@@ -104,6 +105,8 @@ def process_file(image_path, filename, prob_threshold=0.1):
 
         with graph.as_default():
             set_session(sess)
+
+            # Muscle mass segmentation task
             seg_image = segmentation_model.predict(preprocess_test_image(slice_image[np.newaxis, :, :, np.newaxis]))
             seg_image = seg_image[0]
 
