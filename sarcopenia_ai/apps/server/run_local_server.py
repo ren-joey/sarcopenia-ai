@@ -66,7 +66,9 @@ def predict():
             file = request.files["image"]
             path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
             file.save(path)
-            return jsonify(process_file(path, file.filename))
+            res = jsonify(process_file(path, file.filename))
+            os.remove(path)
+            return res
 
 
 def process_file(image_path, filename, prob_threshold=0.1):
@@ -102,7 +104,26 @@ def process_file(image_path, filename, prob_threshold=0.1):
         results["prediction"]["slice_z"] = slice_z
 
         slice_image = image3d[-slice_z, :, :]
+        slice_image2 = image3d[slice_z, :, :]
 
+        # slice2
+        with graph.as_default():
+            set_session(sess)
+
+            # Muscle mass segmentation task
+            seg_image = segmentation_model.predict(preprocess_test_image(slice_image2[np.newaxis, :, :, np.newaxis]))
+            seg_image = seg_image[0]
+
+        out_seg_image = np.flipud(blend2d(np.squeeze(preprocess_test_image(slice_image2)),
+                                          np.squeeze(seg_image > 0.5), 0.5))
+        image2d_preview = place_line_on_img(image2d_preview, pred_z, pred_z, r=1)
+
+        cv2.imwrite(f'{settings.UPLOAD_FOLDER}/{filename}_slice-{pred_id}2.jpg',
+                    to256(np.squeeze(preprocess_test_image(slice_image2))))
+        cv2.imwrite(f'{settings.UPLOAD_FOLDER}/{filename}_frontal-{pred_id}2.jpg', to256(np.squeeze(image2d_preview)))
+        cv2.imwrite(f'{settings.UPLOAD_FOLDER}/{filename}_seg-{pred_id}2.jpg', to256(np.squeeze(out_seg_image)))
+
+        # slice1
         with graph.as_default():
             set_session(sess)
 
