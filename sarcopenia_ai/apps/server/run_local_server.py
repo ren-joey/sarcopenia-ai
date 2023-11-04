@@ -120,7 +120,7 @@ def process_file(image_path, filename, prob_threshold=0.1):
 
         cv2.imwrite(f'{settings.UPLOAD_FOLDER}/{filename}_slice-{pred_id}2.jpg',
                     to256(np.squeeze(preprocess_test_image(slice_image2))))
-        cv2.imwrite(f'{settings.UPLOAD_FOLDER}/{filename}_frontal-{pred_id}2.jpg', to256(np.squeeze(image2d_preview)))
+        cv2.imwrite(f'{settings.UPLOAD_FOLDER}/{filename}_frontal-{pred_id}2.jpg', np.flip(to256(np.squeeze(image2d_preview)), 0))
         cv2.imwrite(f'{settings.UPLOAD_FOLDER}/{filename}_seg-{pred_id}2.jpg', to256(np.squeeze(out_seg_image)))
         cv2.imwrite(f'{settings.UPLOAD_FOLDER}/{filename}_pred-{pred_id}2.jpg', to256(np.squeeze(seg_image)))
 
@@ -138,7 +138,7 @@ def process_file(image_path, filename, prob_threshold=0.1):
 
         cv2.imwrite(f'{settings.UPLOAD_FOLDER}/{filename}_slice-{pred_id}.jpg',
                     to256(np.squeeze(preprocess_test_image(slice_image))))
-        cv2.imwrite(f'{settings.UPLOAD_FOLDER}/{filename}_frontal-{pred_id}.jpg', to256(np.squeeze(image2d_preview)))
+        cv2.imwrite(f'{settings.UPLOAD_FOLDER}/{filename}_frontal-{pred_id}.jpg', np.flip(to256(np.squeeze(image2d_preview)), 0))
         cv2.imwrite(f'{settings.UPLOAD_FOLDER}/{filename}_seg-{pred_id}.jpg', to256(np.squeeze(out_seg_image)))
         cv2.imwrite(f'{settings.UPLOAD_FOLDER}/{filename}_pred-{pred_id}.jpg', to256(np.squeeze(seg_image)))
 
