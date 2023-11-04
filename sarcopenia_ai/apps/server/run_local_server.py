@@ -122,6 +122,7 @@ def process_file(image_path, filename, prob_threshold=0.1):
                     to256(np.squeeze(preprocess_test_image(slice_image2))))
         cv2.imwrite(f'{settings.UPLOAD_FOLDER}/{filename}_frontal-{pred_id}2.jpg', to256(np.squeeze(image2d_preview)))
         cv2.imwrite(f'{settings.UPLOAD_FOLDER}/{filename}_seg-{pred_id}2.jpg', to256(np.squeeze(out_seg_image)))
+        cv2.imwrite(f'{settings.UPLOAD_FOLDER}/{filename}_pred-{pred_id}2.jpg', to256(np.squeeze(seg_image)))
 
         # slice1
         with graph.as_default():
@@ -139,6 +140,7 @@ def process_file(image_path, filename, prob_threshold=0.1):
                     to256(np.squeeze(preprocess_test_image(slice_image))))
         cv2.imwrite(f'{settings.UPLOAD_FOLDER}/{filename}_frontal-{pred_id}.jpg', to256(np.squeeze(image2d_preview)))
         cv2.imwrite(f'{settings.UPLOAD_FOLDER}/{filename}_seg-{pred_id}.jpg', to256(np.squeeze(out_seg_image)))
+        cv2.imwrite(f'{settings.UPLOAD_FOLDER}/{filename}_pred-{pred_id}.jpg', to256(np.squeeze(seg_image)))
 
         results["prediction"]["muscle_attenuation"] = '{0:.2f} HU'.format(
             compute_muscle_attenuation(slice_image, np.squeeze(seg_image > 0.5)))
